@@ -11,9 +11,18 @@ RUN npm install
 
 COPY . .
 
+# 🔹 Gera o Prisma Client antes do build
+RUN npx prisma generate
+
+# Builda a aplicação NestJS
 RUN npm run build
 
+# Porta padrão
+EXPOSE 3000
+
+# Rodar a aplicação
 CMD ["npm", "run", "start:prod"]
+
 
 
 
