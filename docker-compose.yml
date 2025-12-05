@@ -20,11 +20,10 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "29092:9092"  # Evita conflito de porta no host
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      # O nome “kafka” é resolvido automaticamente via DNS interno do Docker
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -47,14 +46,13 @@ services:
       CLOUDINARY_API_KEY: "197286731484726"
       CLOUDINARY_API_SECRET: "Ygo6whjXErJn6htPmiPQr8iHN-o"
       CLOUDINARY_URL: "cloudinary://197286731484726:Ygo6whjXErJn6htPmiPQr8iHN-o@dwp3wuum6"
-      KAFKA_BROKER: "kafka:9092"
+      KAFKA_BROKER: "kafka:9092"  # DNS interno do Docker
       JWT_SECRET: "streamforge_secret_key"
       PORT: 3000
     command: npm run start:prod
     volumes:
       - .:/app
       - /app/node_modules
-
 
   # --- Worker (processamento de vídeos) ---
   video-processor:
@@ -71,4 +69,5 @@ services:
       KAFKA_BROKER: "kafka:9092"
       JWT_SECRET: "streamforge_secret_key"
     command: npm run worker
+
 
