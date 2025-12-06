@@ -6,7 +6,7 @@ async function bootstrap() {
 
   // Permitir CORS para o frontend
   app.enableCors({
-    origin: ['http://localhost:3001', 'https://seu-frontend-dominio.com'],
+    origin: ['http://localhost:3001', 'https://stremaforge.vercel.app/'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
