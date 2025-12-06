@@ -9,6 +9,12 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { VideoService } from './video.service';
 import type { Express } from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
+
+// Garante que a pasta de uploads existe
+const uploadDir = path.join(__dirname, '../../uploads');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 @Controller('videos')
 export class VideoController {
@@ -16,7 +22,7 @@ export class VideoController {
 
   // Endpoint para upload de vídeo
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
     @Body('title') title: string,
@@ -31,6 +37,7 @@ export class VideoController {
     return this.videoService.findAll();
   }
 }
+
 
 
 
