@@ -6,11 +6,13 @@ async function bootstrap() {
 
   // Permitir CORS para o frontend
   app.enableCors({
-    origin: ['http://localhost:3001', 'https://stremaforge.vercel.app/'],
+    origin: [
+      'http://localhost:3001',
+      'https://stremaforge.vercel.app'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
