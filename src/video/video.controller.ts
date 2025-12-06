@@ -4,13 +4,14 @@ import {
   Get,
   Body,
   UploadedFile,
-  UseInterceptors,
+  UseInterceptors, Req, UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { VideoService } from './video.service';
 import type { Express } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { AuthGuard } from '@nestjs/passport';
 
 // Garante que a pasta de uploads existe
 const uploadDir = path.join(__dirname, '../../uploads');
@@ -36,13 +37,12 @@ export class VideoController {
     return this.videoService.uploadVideo(file, title, userId);
   }
 
-  // Endpoint para buscar todos os vídeos
+
   @Get()
-  findAll() {
-    return this.videoService.findAll();
+  @UseGuards(AuthGuard('jwt'))
+  async findAll(@Req() req: any) {
+    const userId = req.user.userId;
+    return this.videoService.findAllByUser(userId);
   }
+
 }
-
-
-
-

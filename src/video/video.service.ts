@@ -42,11 +42,10 @@ export class VideoService {
     return video;
   }
 
-  // Buscar todos os vídeos
-  findAll() {
+  findAllByUser(userId: string) {
     return this.prisma.video.findMany({
+      where: { userId },
       orderBy: { createdAt: 'desc' },
     });
   }
 }
-
