@@ -22,7 +22,12 @@ export class VideoController {
 
   // Endpoint para upload de vídeo
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      dest: './uploads',
+      limits: { fileSize: 500 * 1024 * 1024 },
+    }),
+  )
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
     @Body('title') title: string,
