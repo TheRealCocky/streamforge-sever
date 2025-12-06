@@ -1,19 +1,36 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { VideoService } from './video.service';
-import { CreateVideoDto } from './dto/create-video.dto';
+import type { Express } from 'express';
 
 @Controller('videos')
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 
-  @Post()
-  create(@Body() dto: CreateVideoDto) {
-    return this.videoService.create(dto);
+  // Endpoint para upload de vídeo
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadVideo(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('title') title: string,
+    @Body('userId') userId: string,
+  ) {
+    return this.videoService.uploadVideo(file, title, userId);
   }
 
+  // Endpoint para buscar todos os vídeos
   @Get()
   findAll() {
     return this.videoService.findAll();
   }
 }
+
+
 

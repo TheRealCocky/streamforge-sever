@@ -1,22 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Habilita CORS para todas as origens
+  // Permitir CORS para o frontend
   app.enableCors({
-    origin: '*', // ou coloque um array com os domínios permitidos, ex: ['https://meusite.com']
+    origin: ['http://localhost:3001', 'https://seu-frontend-dominio.com'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true, // se precisar enviar cookies
+    credentials: true,
   });
 
-  app.useGlobalPipes(new ValidationPipe());
-
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`🚀 StreamForge backend running on http://localhost:${port}`);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
+
 

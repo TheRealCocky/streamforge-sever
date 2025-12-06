@@ -12,3 +12,4 @@ export class CloudinaryService {
     return cloudinary.uploader.upload(filePath, { resource_type: 'video' });
   }
 }
+
