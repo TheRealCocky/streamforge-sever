@@ -4,45 +4,54 @@ import {
   Get,
   Body,
   UploadedFile,
-  UseInterceptors, Req, UseGuards,
+  UseInterceptors,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { VideoService } from './video.service';
 import type { Express } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
 import { AuthGuard } from '@nestjs/passport';
+import type { Request } from 'express';
 
-// Garante que a pasta de uploads existe
-const uploadDir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+interface JwtRequest extends Request {
+  user: { userId: string; email: string };
+}
 
 @Controller('videos')
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 
   // Endpoint para upload de vídeo
+  @UseGuards(AuthGuard('jwt'))
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
       dest: './uploads',
-      limits: { fileSize: 500 * 1024 * 1024 },
+      limits: { fileSize: 500 * 1024 * 1024 }, // 500 MB
     }),
   )
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
     @Body('title') title: string,
-    @Body('userId') userId: string,
+    @Req() req: JwtRequest,
   ) {
+    const userId = req.user.userId;
     return this.videoService.uploadVideo(file, title, userId);
   }
 
-
-  @Get()
+  // Endpoint para buscar todos os vídeos de um usuário
   @UseGuards(AuthGuard('jwt'))
-  async findAll(@Req() req: any) {
+  @Get('my')
+  async findAllByUser(@Req() req: JwtRequest) {
     const userId = req.user.userId;
     return this.videoService.findAllByUser(userId);
   }
 
+  // Endpoint para buscar todos os vídeos (opcional)
+  @Get()
+  findAll() {
+    return this.videoService.findAll();
+  }
 }
+

@@ -42,6 +42,14 @@ export class VideoService {
     return video;
   }
 
+  // Buscar todos os vídeos (opcional: admin ou geral)
+  findAll() {
+    return this.prisma.video.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  // Buscar vídeos de um usuário específico
   findAllByUser(userId: string) {
     return this.prisma.video.findMany({
       where: { userId },
